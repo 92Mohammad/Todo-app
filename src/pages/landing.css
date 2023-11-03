@@ -15,6 +15,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 30;
 }
 .sign-up-page h1, .login-up-page h1 {
     position: absolute;

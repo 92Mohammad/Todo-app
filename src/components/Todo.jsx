@@ -2,7 +2,7 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import React from "react";
 
 export default function Todo(props) {
-  // console.log('these are  props : ', props)
+
 
   const [checkBox, setCheckBox] = React.useState(false);
 

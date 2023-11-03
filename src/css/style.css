@@ -17,12 +17,31 @@ body {
    
 }
 .left-header{
+    display: flex;
+    flex: 1;
     margin-left: 50px;
+    /* background: green; */
 }
 .left-header h1{
     margin: 0;
     font-family: 'Gabriela', serif;
     color: wheat;
+}
+
+.middle-header{
+    display: flex;
+    flex: 2;
+    align-items: center;
+    justify-content: end;
+    /* background: #000; */
+    height: 40.67px;
+    gap:50px;
+}
+.middle-header a {
+    text-decoration: none;
+    color: wheat;
+    font-family: 'Gabriela', serif;
+    
 }
 .Btn{
     margin: 0;
@@ -48,7 +67,7 @@ body {
     align-items: center;
     justify-content: end;
     margin-right: 50px;
-   
+   /* background: gold; */
 }
 .todoPage{
     background-image: url('../images/todo-image.jpg');
@@ -143,6 +162,15 @@ body {
     margin-right: 10px;
 }
 
+.menu-btn{
+    color: wheat;
+    font-size: 30px;
+    font-weight: bold;
+    padding: 5px;
+    display: none;
+
+}
+
 @media (max-width: 600px) {
     .read-todo-section{
         width: 340px;
@@ -151,12 +179,11 @@ body {
         margin-left: 15px;
     }
     .right-header{
-        margin-right: 15px;
+        margin-right: 20px;
     }
-    .logout-btn{
-        padding-top: 12px;
-        padding-bottom: 12px;
-        width: 100px;
+
+    .Btn{
+        display: none;
     }
     .read-todo-section {
         padding-left:30px;
@@ -178,4 +205,11 @@ body {
     .todos--container{
         height: 50px;
     }
+    .menu-btn{
+        display: block;
+    }
+    .middle-header{
+        display: none;
+    }
+
 }

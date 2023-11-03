@@ -1,6 +1,9 @@
 import "../css/style.css";
+// IoMenu
+import { IoMenu } from "react-icons/io5";
+
+import { Link } from 'react-router-dom'
 export default function Header(props) {
-  // console.log('i am inside the header comp ', props.isLogin)
 
   const logOut = async() =>{
     try {
@@ -36,6 +39,11 @@ export default function Header(props) {
         <div className="left-header">
           <h1>My Todo</h1>
         </div>
+        <div className="middle-header">
+          <Link to = "/">Home</Link>
+          <Link to = "https://github.com/92Mohammad" target="_blank" >Git Hub</Link>
+          <Link to = "https://twitter.com/Mohammad895718" target="_blank" >Twitter</Link>
+        </div>
         <div className="right-header">
           <button
             className="Btn"
@@ -43,6 +51,7 @@ export default function Header(props) {
           >
             {props.isLogin ? 'LogOut' : "Sign In" } 
           </button>
+          <IoMenu className="menu-btn"/>
         </div>
       </div>
     </>
