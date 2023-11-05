@@ -38,11 +38,30 @@ body {
     gap:50px;
 }
 .middle-header a {
+    position: relative ;
     text-decoration: none;
     color: wheat;
     font-family: 'Gabriela', serif;
+    padding: 5px 8px 5px 8px;
     
 }
+
+.middle-header a::before{
+    content: '';
+    position : absolute;
+    background-color: white;
+    top : 95%;
+    left : 0;
+    right : 0;
+    bottom: 0;
+    transition: transform 300ms ease-in-out;
+    transform: scaleX(0);
+}
+.middle-header a:hover::before,
+.middle-header a:focus::before{ 
+    transform: scaleX(1);
+}
+
 .Btn{
     margin: 0;
     padding-left: 15px;
@@ -126,8 +145,6 @@ body {
     flex-direction: column;
     gap: 10px;
     width: 900px;
-    /* background: skyblue; */
-
 }
 .todos--container{
     background:  #ccccb3;
