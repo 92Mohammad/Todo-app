@@ -1,9 +1,9 @@
 import "../css/style.css";
 // IoMenu
 import { IoMenu } from "react-icons/io5";
-
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 export default function Header(props) {
+  const navigate = useNavigate();
 
   const logOut = async() =>{
     try {
@@ -17,7 +17,7 @@ export default function Header(props) {
       const data = await response.json()
       if (response.status === 200){
           localStorage.removeItem("token");
-          window.location.href = '/'
+          navigate('/');
       }
       console.log(data)
     }catch(error){
@@ -27,7 +27,7 @@ export default function Header(props) {
 
   }
   const SignIn = () => {
-    window.location.href = "/login"
+    navigate('/login')
   }
 
 
