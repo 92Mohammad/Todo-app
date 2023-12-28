@@ -1,10 +1,11 @@
 import "../css/style.css";
-// IoMenu
 import { IoMenu } from "react-icons/io5";
-
 import { Link } from 'react-router-dom'
-export default function Header(props) {
+import { useNavigate } from "react-router-dom";
 
+
+export default function Header(props) {
+  const navigate = useNavigate();
   const logOut = async() =>{
     try {
       const response = await fetch('http://localhost:8000/logout', {
@@ -27,11 +28,8 @@ export default function Header(props) {
 
   }
   const SignIn = () => {
-    window.location.href = "/login"
+    navigate('/login')
   }
-
-
-
 
   return (
     <>

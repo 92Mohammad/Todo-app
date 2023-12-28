@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import SignUpPage from "./pages/Landing";
-import TodoPage from "./pages/Todo";
+import SignUpPage from "./pages/SignUp";
+import TodoPage from "./pages/TodoPage";
 import LoginPage from "./pages/Login";
 import HomePage from './pages/HomePage'
 

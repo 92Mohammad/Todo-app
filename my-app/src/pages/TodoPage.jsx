@@ -1,16 +1,24 @@
-import React from "react";
+import React, { useEffect, useState} from "react";
 import Header from "../components/Header";
 import Todo from "../components/Todo";
+import { useSelector} from 'react-redux'
+import { useNavigate } from "react-router-dom";
+
 
 
 export default function TodoPage() {
-  const [todos, setTodos] = React.useState([]);
-  const [inputText, setInputText] = React.useState("");
+  const navigate = useNavigate();
+  // const dispatch = useDispatch();
+  const todos = useSelector((state) => state.todos);
+  console.log('this is todos arrays: ', todos);
+
+  // const [todos, setTodos] = React.useState([]);
+  const [inputText, setInputText] = useState("");
   
-  React.useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem("token")
     if (!token){
-      window.location.href = '/login'
+      navigate('/login');
     }
   }, [])
 
@@ -26,14 +34,14 @@ export default function TodoPage() {
           authorization: localStorage.getItem("token"),
         },
       });
-      const data = await response.json();
-      setTodos(data);
+      // const data = await response.json();
+      // setTodos(data);
     } catch (err) {
       console.error(err);
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getAllTodo();
   }, []);
 

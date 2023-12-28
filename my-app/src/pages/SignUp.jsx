@@ -2,28 +2,64 @@ import "./landing.css";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
+import { addNewUser } from "../features/users/userSlice";
+import { useDispatch , useSelector} from "react-redux";
 
-export default function LandingPage() {
-  const [formData, setFormData] = React.useState({
+import { postUser } from "../features/users/userSlice";
+export default function SignUp() {
+  const dispatch = useDispatch();
+  const postStatus = useSelector((state) => state.users.status)
+
+  console.log('Inside signUp page: ', postStatus)
+
+  const [formData, setFormData] = useState({
     email: "",
     password: "",
     confirmPassword: "",
-    isChecked: false,
   });
 
   const [passwordMessage, setPasswordMessage] = useState("");
   const [emailMessage, setEmailMessage] = useState("");
 
+
   function handleChange(event) {
-    const { name, type, checked, value } = event.target;
+    setPasswordMessage("");
+
+    const { name, value } = event.target;
     setFormData((prevFormData) => {
       return {
         ...prevFormData,
-
-        [name]: type === "checkbox" ? checked : value,
+        [name]: value,
       };
     });
   }
+
+
+  const handleSignupForm = async() => {
+
+    try {
+      const canSave = formData.email !== "" && formData.password !== "" && formData.confirmPassword !== "";
+      if (canSave){
+        if (formData.password !== formData.confirmPassword){
+          setPasswordMessage("!Incorrect password")
+          return;
+        }
+        const newUser = {
+          email: formData.email,
+          password: formData.password
+        }
+        dispatch(addNewUser(newUser));
+        // console.log('this data is comming from server: ' ,data);
+        formData.email = "";
+        formData.password = "";
+        formData.confirmPassword = "";
+      }
+    
+    }
+    catch(error){
+      console.log(error);
+    }
+  } 
 
   return (
     <>
@@ -60,48 +96,9 @@ export default function LandingPage() {
             onChange={handleChange}
             value={formData.confirmPassword}
           />
-          <div id="checkbox-inptus">
-            <input
-              id="checkbox"
-              type="checkbox"
-              name="isChecked"
-              checked={formData.isChecked}
-              onChange={handleChange}
-            />
-            <label htmlFor="checkbox">all terms & conditions</label>
-          </div>
           <button
             className="sumbit-btn"
-            onClick={async () => {
-              alert("you clicked the button");
-              const USER = {
-                email: formData.email,
-                password: formData.password,
-                confirmPassword: formData.confirmPassword,
-              };
-              try {
-                const response = await fetch("http://localhost:8000/signup", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify(USER),
-                });
-                const data = await response.json();
-                if (data.message === "Incorrect password") {
-                  setPasswordMessage(data.message);
-                }
-                if (data.message === "Email already exist") {
-                  setEmailMessage(data.message);
-                }
-                if (response.status === 201) {
-                  // Redirect to '/login'
-                  window.location.href = "/login";
-                }
-              } catch (err) {
-                console.error(err);
-              }
-            }}
+            onClick = {() => handleSignupForm()}
           >
             Sign up
           </button>

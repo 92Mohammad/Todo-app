@@ -18,13 +18,8 @@ app.get('/', (req, res) => {
 
 
 app.post('/signup', (req, res) =>{
-    const email = req.body.email;
-    const password = req.body.password
-    const confirmPassword = req.body.confirmPassword;
-    if (password !== confirmPassword){
-        return  res.send({ message: "Incorrect password"})
-    }
-   
+    
+    const {email, password } = req.body;
     const values = [email]
     
     const sql1 = 'SELECT * FROM users WHERE  user_email = ?';
@@ -32,7 +27,6 @@ app.post('/signup', (req, res) =>{
         if (err) {
             console.log(err)
         }
-        
         if (results.length === 0){
             // if array is empty it means that user does not exits
             //  so create a new user into database
