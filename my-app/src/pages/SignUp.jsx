@@ -1,16 +1,16 @@
 import "./landing.css";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link , useNavigate} from "react-router-dom";
 import Header from "../components/Header";
-import { addNewUser } from "../features/users/userSlice";
+import { userSignUp, setMessages } from "../features/users/userSlice";
 import { useDispatch , useSelector} from "react-redux";
 
-import { postUser } from "../features/users/userSlice";
 export default function SignUp() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const postStatus = useSelector((state) => state.users.status)
+  const {emailMessage } = useSelector((state) => state.users);
 
-  console.log('Inside signUp page: ', postStatus)
+  // console.log('Inside signUp page: ',  emailMessage);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -19,12 +19,9 @@ export default function SignUp() {
   });
 
   const [passwordMessage, setPasswordMessage] = useState("");
-  const [emailMessage, setEmailMessage] = useState("");
-
 
   function handleChange(event) {
     setPasswordMessage("");
-
     const { name, value } = event.target;
     setFormData((prevFormData) => {
       return {
@@ -36,28 +33,37 @@ export default function SignUp() {
 
 
   const handleSignupForm = async() => {
-
-    try {
-      const canSave = formData.email !== "" && formData.password !== "" && formData.confirmPassword !== "";
-      if (canSave){
-        if (formData.password !== formData.confirmPassword){
-          setPasswordMessage("!Incorrect password")
-          return;
-        }
+    const canSave = formData.email !== "" && formData.password !== "" && formData.confirmPassword !== "";
+    if (canSave){
+      if (formData.password !== formData.confirmPassword){
+        setPasswordMessage("!Incorrect password")
+        return;
+      }
+      try {
         const newUser = {
           email: formData.email,
           password: formData.password
         }
-        dispatch(addNewUser(newUser));
-        // console.log('this data is comming from server: ' ,data);
-        formData.email = "";
-        formData.password = "";
-        formData.confirmPassword = "";
+        const response = await fetch("http://localhost:8000/signup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newUser),
+        }); 
+        
+        const data = await response.json();
+        if (response.status === 201){
+          navigate('/login')
+        }
+        else {
+          dispatch(userSignUp(data));
+        }
+     
       }
-    
-    }
-    catch(error){
-      console.log(error);
+      catch(error){
+        console.log(error);
+      } 
     }
   } 
 
@@ -77,6 +83,7 @@ export default function SignUp() {
             placeholder="Email"
             onChange={handleChange}
             value={formData.email}
+            onFocus={(e) => dispatch(setMessages({inputType : e.target.type}))}
           />
           <input
             type="password"
@@ -95,6 +102,7 @@ export default function SignUp() {
             placeholder="Confirm Password"
             onChange={handleChange}
             value={formData.confirmPassword}
+
           />
           <button
             className="sumbit-btn"

@@ -1,28 +1,48 @@
 import "./landing.css";
 import { React, useRef, useState} from "react";
-import { Link} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import { useDispatch } from "react-redux";
-import { userLogin } from "../features/users/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { userLogin , setMessages} from "../features/users/userSlice";
 
 export default function LoginPage() {
-  const [passwordMessage, setPasswordMessage] = useState("");
-  const [emailMessage, setEmailMessage] = useState("");
+  const naviagte = useNavigate();
   const dispatch  = useDispatch();
+  const {emailMessage, passwordMessage } = useSelector(state => state.users);
+
   const emailRefElement = useRef();
   const passwordRefElement = useRef();
   const checkboxRefElement = useRef();
+  
 
-  const handleForm = () => {
+  const handleLoginForm = async() => {
     if (emailRefElement !== "" && passwordRefElement !== ""){
-      // create a new user 
-      const USER = {
-        email:  emailRefElement.current.value,
-        password: passwordRefElement.current.value,
+      try {
+        const USER = {
+          email:  emailRefElement.current.value,
+          password: passwordRefElement.current.value,
+        }
+        const response = await fetch("http://localhost:8000/login", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify(USER),
+        });
+        const data = await response.json();
+
+        if (response.status === 200){
+          localStorage.setItem("token", data.token);
+          naviagte("/todoPage");
+        }
+        else {
+          dispatch(userLogin(data))
+        }
+     
       }
-      dispatch(userLogin(USER))
-      emailRefElement.current.value = "";
-      passwordRefElement.current.value = "";
+      catch(error){
+          console.log(error);
+      }  
     }
   }
 
@@ -40,6 +60,7 @@ export default function LoginPage() {
             type="email"
             placeholder="Email"
             ref = {emailRefElement}
+            onFocus={(e) => dispatch(setMessages({inputType: e.target.type}))}
           />
           <label id="p-label" htmlFor="password">
             <span>{passwordMessage && "*"}</span> {passwordMessage}
@@ -49,21 +70,22 @@ export default function LoginPage() {
             type="password"
             placeholder="Password"
             ref = {passwordRefElement}
+            onFocus={(e) => dispatch(setMessages({inputType : e.target.type}))}
           />
 
           <div id="checkbox-inptus">
-            <input
+            <input  
               id="checkbox"
               type="checkbox"
               name="isChecked"
               ref = {checkboxRefElement}
+             
             />
             <label htmlFor="checkbox">all terms & conditions</label>
           </div>
           <button
             className="sumbit-btn"             
-            onClick = {() => handleForm()}
-
+            onClick = {() => handleLoginForm()}
           >
             LogIn
           </button>

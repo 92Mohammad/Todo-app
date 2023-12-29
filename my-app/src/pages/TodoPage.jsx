@@ -1,19 +1,18 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useRef} from "react";
 import Header from "../components/Header";
 import Todo from "../components/Todo";
-import { useSelector} from 'react-redux'
+import { useDispatch, useSelector} from 'react-redux'
 import { useNavigate } from "react-router-dom";
+import { addTodo } from "../features/todos/todosSlice";
 
 
 
 export default function TodoPage() {
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
-  const todos = useSelector((state) => state.todos);
-  console.log('this is todos arrays: ', todos);
+  const dispatch = useDispatch();
+  const todos = useSelector(state => state.todos.todoItems)
 
-  // const [todos, setTodos] = React.useState([]);
-  const [inputText, setInputText] = useState("");
+  const textRefElement = useRef();
   
   useEffect(() => {
     const token = localStorage.getItem("token")
@@ -22,9 +21,6 @@ export default function TodoPage() {
     }
   }, [])
 
-  function handleChange(event) {
-    setInputText(event.target.value);
-  }
 
   const getAllTodo = async () => {
     try {
@@ -34,10 +30,11 @@ export default function TodoPage() {
           authorization: localStorage.getItem("token"),
         },
       });
-      // const data = await response.json();
-      // setTodos(data);
-    } catch (err) {
-      console.error(err);
+      const data = await response.json();
+      dispatch(addTodo(data))
+    } 
+    catch (err) {
+      console.error(err); 
     }
   };
 
@@ -54,27 +51,29 @@ export default function TodoPage() {
             type="text"
             placeholder="Enter new todo..."
             name="todo"
-            value = {inputText}
-            onChange={handleChange}
+            ref = {textRefElement}
           />
           <button
             onClick={async () => {
               try {
-                const response = await fetch("http://localhost:8000/createNewTodo", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    authorization: localStorage.getItem("token"),
-                  },
-                  body: JSON.stringify({
-                    task: inputText,
-                  }),
-                });
-                if (response.status === 201) {
-                  getAllTodo();
-                  setInputText("");
+                const inputText = textRefElement.current.value;
+                if (inputText !== ""){
+                  const response = await fetch("http://localhost:8000/createNewTodo", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      authorization: localStorage.getItem("token"),
+                    },
+                    body: JSON.stringify({
+                      task: inputText,
+                    }),
+                  });
+                  if (response.status === 201) {
+                    getAllTodo();
+                    textRefElement.current.value = "";
+                  }
                 }
-              } catch (error) {
+              } catch (error) { 
                 console.log(error);
               }
             }}

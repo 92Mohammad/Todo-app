@@ -9,7 +9,7 @@ module.exports = {
                 console.error("Query failed in getTodo method : ", err.message)
             }
             else {
-                return res.status(200).json( results)
+                return res.status(200).json(results)
             }
         })
     },
